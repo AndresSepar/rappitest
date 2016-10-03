@@ -1,0 +1,52 @@
+
+
+<div class="Title">
+  <h1>Products</h1>
+  <cart></cart>
+</div>
+
+<div class="ToolBox">
+  <div class="ToolBox-search">
+    <input class="Input" type="text" ng-model="vm.search" placeholder="Search..." />
+  </div>
+</div>
+
+<div class="Product">
+  <sidebar class="Sidebar">
+    <fieldset ng-init="vm.filter.category = ''">
+      <legend>Categories:</legend>
+      <label class="Label"><input type="radio" ng-model="vm.filter.category" value=""> All</label>
+      <label class="Label" ng-repeat="category in vm.categories | orderBy : 'name'"><input type="radio" ng-model="vm.filter.category" ng-value="category.category_id"> {{category.name}}</label>
+    </fieldset>
+    <fieldset ng-init="vm.filter.available = ''">
+      <legend>Filter by:</legend>
+      <label class="Label"><input type="radio" ng-model="vm.filter.available" value=""> All</label>
+      <label class="Label"><input type="radio" ng-model="vm.filter.available" value="true"> Available</label>
+      <label class="Label"><input type="radio" ng-model="vm.filter.available" value="false"> Sold out</label>
+      <hr>
+      <label class="Label"><input type="checkbox" ng-model="vm.filter.bestseller" ng-true-value="true" ng-false-value=""> Best seller</label>
+      <hr>
+      <label class="Label"><input type="checkbox" ng-model="vm.filter.minValue" ng-true-value="30000" ng-false-value=""> Greater than $30.000</label>
+      <label class="Label"><input type="checkbox" ng-model="vm.filter.maxValue" ng-true-value="10000" ng-false-value=""> Smaller than $10.000</label>
+    </fieldset>
+    <fieldset ng-init="vm.sort = 'name'">
+      <legend>Sort by:</legend>
+      <label class="Label"><input type="radio" ng-model="vm.sort" value="name"> Name</label>
+      <label class="Label"><input type="radio" ng-model="vm.sort" value="price"> Highest price</label>
+      <label class="Label"><input type="radio" ng-model="vm.sort" value="-price"> Lower price</label>
+    </fieldset>
+  </sidebar>
+  <ul class="Product-list">
+    <li class="Product-listItem" ng-repeat="product in vm.products | filter: {name: vm.search, categories: vm.filter.category, available: vm.filter.available, best_seller: vm.filter.bestseller} | orderBy: vm.sort | gt:vm.filter.minValue | lt:vm.filter.maxValue">
+      <div class="Product-listInner">
+        <img class="Product-listImage" ng-src="{{product.img}}" ng-class="{'isSoldOut': !product.available}">
+        <h4 class="Product-listTitle"><span>{{product.name}}</span> <small>{{product.price | currency : "$" : 0}}</small></h4>
+        <div class="Product-listOverlay">
+          <button class="Product-button" ng-click="vm.addToCart(product)">Add to cart</button>
+        </div>
+        <img class="Product-listSold" ng-src="assets/images/sold-out.png" ng-if="!product.available">
+        <img class="Product-listBest" ng-src="assets/images/best-seller.png" ng-if="product.best_seller">
+      </div>
+    </li>
+  </ul>
+</div>
